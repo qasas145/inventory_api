@@ -8,6 +8,8 @@ from django.db.models import Count, Sum, F
 from rest_framework.views import APIView
 from rest_framework import viewsets
 from rest_framework.response import Response
+
+from user_control.permissions import IsAuthenticatedCustom
 from .serializer import InventoryGroupSerializer, InventorySerializer, InventoryWithSumSerializer, InvoiceSerializer, ShopSerializer, InvoiceItemSerializer, ShopWithAmountSerializer
 from .models import Inventory, InventoryGroup, Invoice, InvoiceItem, Shop
 from me_inventory.utils import CustomPagination, get_query
@@ -21,6 +23,8 @@ from me_inventory.utils import CustomPagination, get_query
 class InventoryView(viewsets.ModelViewSet) :
     queryset = Inventory.objects.all()
     serializer_class = InventoryWithSumSerializer
+    permission_classes = (IsAuthenticatedCustom)
+
 
 
     def get_queryset(self):
@@ -54,6 +58,8 @@ class InventoryView(viewsets.ModelViewSet) :
 class InventoryGroupView(viewsets.ModelViewSet) :
     queryset = InventoryGroup.objects.all()
     serializer_class = InventoryGroupSerializer
+    permission_classes = (IsAuthenticatedCustom)
+
 
 
 
@@ -61,6 +67,8 @@ class ShopView(viewsets.ModelViewSet) :
     queryset = Shop.objects.all()
     serializer_class = ShopSerializer
     pagination_class = CustomPagination
+    permission_classes = (IsAuthenticatedCustom)
+
 
     def get_queryset(self):
 
@@ -90,6 +98,8 @@ class InvoiceView(viewsets.ModelViewSet) :
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
     pagination_class = CustomPagination
+    permission_classes = (IsAuthenticatedCustom)
+
     def get_queryset(self):
 
         if self.request.method.lower() != "get":
@@ -121,6 +131,7 @@ class InvoiceItemView(viewsets.ModelViewSet) :
     queryset = InvoiceItem.objects.all()
     serializer_class = InvoiceItemSerializer
 
+    permission_classes = (IsAuthenticatedCustom)
 
 
 
@@ -130,6 +141,8 @@ class SalePerformanceView(viewsets.ModelViewSet) :
     http_method_names = ('get',)
     queryset = InventoryView.queryset
     serializer_class = InventoryView.serializer_class
+
+    permission_classes = (IsAuthenticatedCustom)
 
     def list(self, request, *args, **kwargs):
         query_data = request.query_params.dict()
@@ -158,6 +171,7 @@ class SalePerformanceView(viewsets.ModelViewSet) :
 class SaleByShopView(viewsets.ModelViewSet) :
     http_method_names = ('get',)
     queryset = InventoryView.queryset
+    permission_classes = (IsAuthenticatedCustom)
 
 
     def list(self, request, *args, **kwargs):
@@ -202,6 +216,8 @@ class SaleByShopView(viewsets.ModelViewSet) :
 class PurchaseView(viewsets.ModelViewSet):
     http_method_names = ('get',)
     queryset = InvoiceView.queryset
+    
+    permission_classes = (IsAuthenticatedCustom)
 
     def list(self, request, *args, **kwargs):
         query_data = request.query_params.dict() 
