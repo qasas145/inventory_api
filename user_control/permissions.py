@@ -4,17 +4,19 @@ from user_control.authentication import decode_jwt
 
 
 
+
+# SAFE_METHODS = SAFE_METHODS +("POST",)
 class IsAuthenticatedCustom(BasePermission) :
 
 
 
     def has_permission(self, request, view):
-        '''
+        # '''
         
         if request.method in SAFE_METHODS :
             return True
 
-        '''
+        # '''
         try :
             auth_token = request.META.get("HTTP_AUTHORIZATION", None)
             print(auth_token)
@@ -37,4 +39,6 @@ class IsAuthenticatedCustom(BasePermission) :
         
 
         
-        return super().has_permission(request, view)
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj
+    

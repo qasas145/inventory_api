@@ -15,7 +15,6 @@ from .models import CustomUser
 
 
 class UserView(viewsets.ModelViewSet) :
-    http_method_names = ['get',]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticatedCustom,)
