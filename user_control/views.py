@@ -5,7 +5,8 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from .serializer import CustomUserSerializer, LoginSerializer, CreateUserSerializer
-from .authentication import generate_access_token, generate_refresh_token
+from .authentication import generate_access_token, generate_refresh_token, Authentication
+from .permissions import IsAuthenticatedCustom
 from .models import CustomUser
 
 
@@ -17,7 +18,7 @@ class UserView(viewsets.ModelViewSet) :
     http_method_names = ['get',]
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-
+    permission_classes = (IsAuthenticatedCustom,)
 
 
 
@@ -25,6 +26,9 @@ class LoginView(APIView) :
 
 
     serializer_class = LoginSerializer
+    
+    
+    permission_classes = (IsAuthenticatedCustom,)
 
     def post(self, *args, **kwargs) :
 

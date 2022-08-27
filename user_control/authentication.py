@@ -4,6 +4,8 @@ from datetime import timedelta, datetime
 import random
 import string
 from .models import CustomUser
+from rest_framework.authentication import BaseAuthentication
+
 
 
 
@@ -48,3 +50,47 @@ def decode_jwt(bearer) :
 
         except :
             return None
+
+
+
+class Authentication(BaseAuthentication) :
+
+
+    def authenticate(self, request):
+        data = self.validate_request(request.headers)
+
+        if not data :
+            return None, None
+
+        return self.get_user(data['id']), None
+
+    
+    def get_user(self,user_id) :
+
+        try :
+            user = CustomUser.objects.get(id = user_id)
+            return user
+        except :
+            return None
+
+    
+
+    def validate_request(self, headers) :
+
+        authorization = headers.get("authorization", None)
+
+        if not authorization :
+            return None
+        
+        token = authorization[7:]
+        data = decode_jwt(token)
+
+        if not data :
+            return None
+        
+        if data['exp'] > datetime.now().timestamp() > data['exp'] :
+            return None
+
+        return data
+
+        
